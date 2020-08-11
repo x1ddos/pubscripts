@@ -13,6 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -x
-openssl s_client -showcerts -servername $1 -connect $1:443 </dev/null \
-  |& openssl x509 -text
+set -e
+
+host="$1"
+shift
+
+args="$@"
+if [ -z "$args" ]; then
+    args="-noout -text"
+fi
+
+openssl s_client -showcerts -servername "$host" -connect "$host":443 </dev/null \
+  |& openssl x509 $args
